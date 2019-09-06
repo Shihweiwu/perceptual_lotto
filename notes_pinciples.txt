@@ -1,0 +1,109 @@
+> overview on code structure: 
+You set up everything you ever need, information about tasks. 
+Stimulus is a struct array that contains information about the stimuli. 
+Task is a struct array containing information about task. 
+These two structural arrays are set up. 
+Once they are set up, the next step is to "initialize" 
+task (initTask). initTask calls back functions that draw stimuli and detect response. 
+Then you enter the main task loop where you "update" status until the end of the experiment. 
+
+key functions:
+
+> stencils related
+% stencils are used to control drawing only to specific parts of the screen
+% the dots will be drawing on those stencils
+mglClearScreen(0); %clear buffer
+mglStencilCreateBegin(1); %begin drawing to stencil.
+% draw two oval stencils; why using first and third patch location? because
+% first and second have the same location, third and fourth pathes have the
+% same location.
+for di = [1 3]
+    %draw a filled oval to stencil that has size targetWidth
+    mglFillOval(stimulus.patches{di}.xcenter,stimulus.patches{di}.ycenter,[stimulus.targetWidth, stimulus.targetWidth],[1 1 1]);
+end
+mglFillOval(0,0,[stimulus.targetWidth stimulus.targetWidth]/4,[1 1 1]); %another stencil at (0,0)
+mglFlush; %swap front and back buffer
+mglStencilCreateEnd;
+% Now that you have created the stencils, later on when you want to draw
+% you should call mglStencilSelect(1) before the drawing and
+% mglStencilSelect(0) after flushing. This is called in
+% drawCue,drawStim,drawTarget
+
+
+> initDots
+% initialize dots according to the specifications above.
+% mostly on locations of these cue dots.
+
+> initScreen
+%% Setup Screen
+% what does initScreen do?
+% will open up a screen window
+if stimulus.replay
+    myscreen = initScreen('replayScreen');
+else
+    myscreen = initScreen('VPixx');
+end
+% set background to black
+myscreen.background = 0;
+
+myscreen = initScreen('replayScreen');
+%opens up a blank screen and returns information about screen parameters in myscreen
+
+> initTask
+    [task{1}{phaseNum}, myscreen] = initTask(task{1}{phaseNum},myscreen,@startSegmentCallback,@screenUpdateCallback,@getResponseCallback,@startTrialCallback,@endTrialCallback,[]);
+    % initTask is a mgl function that initializes task for stimuli programs
+    %
+    % initTask takes input task{1}{phaseNum} and myscreen and calls a bunch of functions that take these two as inputs
+    % and return an update on task{1}{phaseNum} and myscreen.
+    %
+    % 1. startSegmentCallback: does nothing.
+    % 2. screenUpdateCallback: does all the drawing and get response  
+    % 3. getResponseCallback: if task.thistrial.gotResponse==0 (didn't get
+    % a response?), then task = jumpSegment(task) (jump to the next segment).
+    % 4. startTrialCallback: set mouse position, get mouse position, cur dots direction, distractors, targetAngle, distractorAngle ... 
+    % 5. endTrialCallback: if task.thistrial.dead, return, end. 
+    % 
+
+> updateTask
+[task{1}, myscreen, phaseNum] = updateTask(task{1},myscreen,phaseNum);
+    % updateTask is mgl function that runs experimental tasks. It updates
+    % task in running stimulus programs. 
+    % It updates task{1} and phaseNum, both are used to evaluate the while
+    % loop.
+
+updateTask outputs task and myscreen, which is then used in tickScreen below
+    % flip screen
+    myscreen = tickScreen(myscreen,task);
+
+it's like you draw everything (in the back) and when you flip it you show what's drawn.
+This makes sense. But you still need to detect response. It must be somewhere in updateTask. 
+
+
+> mglClose would close the screen (with about 15 sec delay)
+
+> mglClearScreen: Sets the background color and clears the buffer
+
+> mglGetParam
+
+> mglStencilCreateBegin: begin drawing to stencil.
+
+e.g.
+mglOpen; %open an mgl window
+ mglScreenCoordinates;
+ 
+ %Draw an oval stencil
+ mglStencilCreateBegin(1);
+ mglFillOval(300,400,[100 100]);
+ mglStencilCreateEnd;
+ mglClearScreen;
+ 
+ % now draw some dots, masked by the oval stencil
+ mglStencilSelect(1);
+ mglPoints2(rand(1,5000)*500,rand(1,5000)*500);
+ mglFlush; %swap front and back buffer (waits for one frame tick)
+ mglStencilSelect(0);
+
+Drawing: first open a screen. begin drawing to a stencil (mglStencilCreateBegin)
+draw an oval stencil. draw some dots masked by the oval stencil (use mglStencilSelect).
+swap butter (mglFlush).
+

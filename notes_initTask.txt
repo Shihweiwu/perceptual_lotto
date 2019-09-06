@@ -1,0 +1,58 @@
+
+> initTask
+    [task{1}{phaseNum}, myscreen] = initTask(task{1}{phaseNum},myscreen,@startSegmentCallback,@screenUpdateCallback,@getResponseCallback,@startTrialCallback,@endTrialCallback,[]);
+    % initTask is a mgl function that initializes task for stimuli programs
+    %
+    % initTask takes input task{1}{phaseNum} and myscreen and calls a bunch of functions that take these two as inputs
+    % and return an update on task{1}{phaseNum} and myscreen.
+    %
+    % 1. startSegmentCallback: does nothing.
+    % 2. screenUpdateCallback: does all the drawing and get response  
+    % 3. getResponseCallback: if task.thistrial.gotResponse==0 (didn't get
+    % a response?), then task = jumpSegment(task) (jump to the next segment).
+    % 4. startTrialCallback: set mouse position, get mouse position, cur dots direction, distractors, targetAngle, distractorAngle ... 
+    % 5. endTrialCallback: if task.thistrial.dead, return, end. 
+    % 
+    % are the callback functions listed here. They have to be in this
+    % particular order. See initTask. In initTask, the sixth callback
+    % function is startBlockCallback, the seventh callback function is
+    % randCallback
+    % 
+    %
+    %
+    % These functions are defined at the end as subfunctions. 
+    % All these functions take task{1}{phaseNum} and myscreen as inputs
+    %
+    %
+    % > what does "callbacks" mean?
+    % Usually use together with function: callback function
+    % e.g. plot(x,y,'ButtonDownFcn',@lineCallback)
+    % lineCallBack is a callback function for the lines created by the plot
+    % function. Use the @ operator to assign the function handle to the
+    % ButtonDownFcn property of each line created by plot
+    % 
+    % function lineCallback(src,~)
+    % src.Color = 'red';
+    % end
+    %
+    % > what does "function handles" mean?
+    % A function handle is a MATLAB value that provides a means of calling
+    % a function indirectly. You can pass function handles in calls to
+    % other functions.
+    % To create a function handle, precede the function mane with an @ sign.
+    % e.g. create a handle named f as follows:
+    % f = @myfunction
+    % You call a function using a handle the same way you call the function
+    % directly.
+    % e.g. 
+    % function y = computeSquare(x)
+    % y=x.^2;
+    % end
+    %
+    % f = @computeSquare
+    % a=4;
+    % b = f(a)
+    % 
+    % function handles are variables you can pass to other functions
+    % e.g. q = integral(f,0,1)
+

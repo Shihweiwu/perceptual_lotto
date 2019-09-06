@@ -1,0 +1,41 @@
+1. Because I see call to mglGetSID, I type help mglGetSID and find mglSetSID should probably 
+be called before mglGetSID
+
+So I try
+
+>> mglSetSID('add');
+(mglSetSID) SID database is locked by wei since 15-Feb-2019 21:20:08
+Do you want to ignore the lock (in which case if wei tries to save, you might lose your changes - or you might write over their changes) (y/n)? y
+(mglSetSID) Stealing lock from wei
+(mglSetSID) Setting lock file on SID database
+(mglSetSID) !!! Can not load SID Database because filename has not been set: use mglSetParam('sidDatabaseFilename','filename'); !!!
+>> mglSetParam('sidDatabaseFilename','filename');
+>> mglSetSID('add');
+(mglSetSID) Setting lock file on SID database
+(mglSetSID) Could not find SID Database file filename, create one from scratch? (y/n)? y
+Undefined variable reqiredFields.
+
+Error in mglSetSID>loadSIDDatabase (line 507)
+      if iscell(reqiredFields{iField}{2})
+
+Error in mglSetSID>addSID (line 682)
+sidDatabase = loadSIDDatabase;
+
+Error in mglSetSID (line 182)
+  addSID(private);
+ 
+2. What does replay mean?
+3. What does overrideRun mean?
+4. there is a variable called debug, which is also a MATLAB built-in function. 
+5. there is a variable called run, which is also a MATLAB built-in function.
+
+6. What does "probe" task mean?
+Seems like setting up task structure, such as what is the first segment, what is second, ... and how long each segment is.
+
+7. The task while-loop that calls updateTask and tickScreen 
+what does updateTask do? 
+Where is the frame-by-frame drawing? I thought in initTask, but no longer sure because can't find evidence to support it. 
+Where is the loop that detects response? 
+If you provide feedback based on subject's performance on a trial-by-trial basis, there should be code for it. where is it?
+  
+ 

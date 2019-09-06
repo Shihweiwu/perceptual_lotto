@@ -1,0 +1,33 @@
+[task{1}, myscreen, phaseNum] = updateTask(task{1},myscreen,phaseNum);
+    % updateTask is mgl function that runs experimental tasks. It updates
+    % task in running stimulus programs. 
+    % It updates task{1} and phaseNum, both are used to evaluate the while
+    % loop.
+    %
+    % So what is the rationale here? 
+    % > in initTask you call functions that takes care of evertyhing you ever need 
+    % (including drawing stimuli and detecting a response) in this experiment. 
+    % > initTask does the above by calling the functions needed to perform
+    % these things "if" these functions are called:
+    %   > startSegmentCallback: does nothing.
+    %   > trialResponseCallback: 
+    %   > screenUpdateCallback: refreshes the screen. draw stimuli
+    %   depending on which segment of a trial you are in. e.g. case
+    %   stimulus.seg.stim, drawStim and drawFix.
+    %   > endTrialCallback
+    %   > startTrialCallback
+    %   > startBlockCallback
+    %   > randCallback
+    %   ...
+    % These functions are subfunctions at afcom_wei.
+    %
+    % > in updateTask you show them? 
+    % > in updateTask you detect response?
+    %
+    % so all the drawings are done in updateTask?
+    %
+    % I see drawFix, drawBorder, drawAllBorders, drawCue, drawStim, drawTarget, afPoints, drawPicker, drawResp, mglGluPartialDisk_ 
+    % But where are these functions called?
+    % drawStim, drawFix, drawCue, drawTarget, drawPicker, drawAllBorders
+    % called in screenUpdateCallback. screenUpdateCallback is called by
+    % initTask.

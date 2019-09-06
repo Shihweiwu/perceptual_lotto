@@ -1,0 +1,59 @@
+{\rtf1\ansi\ansicpg1252\cocoartf1671\cocoasubrtf500
+{\fonttbl\f0\fswiss\fcharset0 Helvetica;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\cssrgb\c0\c0\c0;}
+\margl1440\margr1440\vieww12060\viewh17720\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 2019.05.30.\
+\cf2 testExperiment_dotCatch_rndLife\
+\pard\pardeftab720\partightenfactor0
+\cf2 > Limit dots lifespan (e.g. 6 frames for 60Hz refresh rate = 100ms) so that after every 6 frames we will redraw all dots and resample their motion path.\
+> Each dot starts with random lifespan [1,n] where n is the maximum lifespan (e.g. 6 frames). After a dot's life goes to 0 it gets reset to the max lifespan defined in task\{2\}\{1\}.parameter.lifespan.\
+> In this version, at each frame, only dots that are alive are plotted. So the number of dots plotted would vary slightly from frame to frame and is an increasing function of dot lifespan (if dots live longer, on each frame there would be less dots dying. testExperiment_dotCatch_rndLife_2 is the version that plots all dots by reseting dead dots.\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf2 testExperiment_dotCatch_rndLife_2\
+> Limit dots lifespan (e.g. 6 frames for 60Hz refresh rate = 100ms) so that after every 6 frames we will redraw all dots and resample their motion path.\
+\pard\pardeftab720\partightenfactor0
+\cf2 > Each dot starts with random lifespan [1,n] where n is the maximum lifespan (e.g. 6 frames). After a dot's life goes to 0 it gets reset to the max lifespan. defined in task\{2\}\{1\}.parameter.lifespan.\
+> In this version, at each frame, before we plot the dots we identify which dots die. We reset those dots -- giving it max lifespan and randomly re-positioning its  location -- and we plot all dots. Hence the number of dots plotted would be the same across all frames. testExperiment_dotCatch_rndLife is the version that plots only the alive dots.\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+\cf2 \
+\cf0 \
+2019.05.29.\
+\
+testExperiment_dotCatch: \
+Original version. Have dots move continuously towards an exit place.\
+Problems. 1. Dots density changes over time, area where most dots move towards become denser. 2. Edgy-ness: there is a triangular shape of area of dots early in a trial. 3. Some dots appear to \'93bounce back\'94 after exiting the aperture.\
+\
+testExperiment_dotCatch_limitLife:\
+Limit dots lifespan (e.g. 6 frames for 60Hz refresh rate) so that after every 6 frames we will re-place all dots at random positions and resample their motion path.\
+Problems. A pulse-like perception (set stimulus.dots.nFramesToReDraw=12). Likely due to re-placing dots position at random location after nFramesToReDraw.\
+\
+testExperiment_dotCatch_limitLife_2:\
+Limit dots lifespan so that after every n frames we will resample all their motion paths. No re-placing dots at random position like previous version. \
+Perception: No pulse-like perception like last version. Dots move continuously towards exit positions.\
+\
+testExperiment_dotCatch_limitLife_2p1:\
+Limit dots lifespan so that every n frames we will redetermine all dots\'92 motion paths. Add random motion.\
+Perception. nFramesToReDraw=12. coherence=[0.05 0.1 0.2 0.4]. Under some condition, it looks like what we want \'97 some dots moving towards an exit position while noisy motion keeps dots density.\
+\
+testExperiment_dotCatch_limitLife_2p11:\
+Limit dots lifespan so that every n frames we will re-position all dots and redetermine all dots\'92 motion paths. Add random motion.\
+Perception. nFramesToReDraw=60. coherence=[0.05 0.1 0.2 0.4]. Set presentation time to match a cycle. That is, if nFramesToReDraw is 60, which is the refresh rate, then set presentation time to 1 sec: task\{2\}\{1\}.segmin = [1 1]; task\{2\}\{1\}.segmax = [1 1]. This could work! Coherence at 0.2 looks about right.\
+\
+testExperiment_dotCatch_limitLife_2p2:\
+Limit dots lifespan so that every n frames we will re-position all dots and redetermine all dots\'92 motion paths. Add random motion. At each frame, randomly choose a subset of dots to be the von Mises dots.\
+Perception: Dots moving towards exit appear to move slowly (possibly due to rand select at each frame.\
+\
+testExperiment_dotCatch_limitLife_2p22:\
+Identical to _2p11 except when redraw it does not re-position all dots. In other words, before redraw they are the same.\
+\
+testExperiment_dotCatch_limitLife_3:\
+Limit dots lifespan so that after n frames we will redetermine all dots\'92 motion path by resampling from the same von Mises. Every time motion path is set and reset, add random noise to the angle sampled from von Mises.\
+Perception: look very similar to _2 version (rndAngle = pi/6, nFramesReDraw=12). Look different (pi/2, 2)   \
+\
+testExperiment_dotCatch_back2Dir:\
+Back to direction task. Dots not moving towards a single exit.\
+}
